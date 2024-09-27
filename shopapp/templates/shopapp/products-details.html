@@ -1,0 +1,46 @@
+{% extends 'shopapp/base.html' %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Product" %} #{{ product.pk }}
+{% endblock %}
+
+{% block body %}
+  <h1>{% trans "Product" %} <strong>{{ product.name }}</strong></h1>
+  <div>
+    <div>{% trans "Description" %}: <em>{{ product.description }}</em></div>
+    <div>{% trans "Price" %}: {{ product.price }}</div>
+    <div>{% trans "Discount" %}: {{ product.discount }}</div>
+    <div>{% trans "Archived" %}: {{ product.archived }}</div>
+
+    {% if product.preview %}
+      <img src="{{ product.preview.url }}" alt="{{ product.preview.name }}">
+    {% endif %}
+
+    <h3>{% trans "Images" %}:</h3>
+    <div>
+      {% blocktrans count counter=product.images.all.count %}
+        There is {{ counter }} image available for this product.
+      {% plural %}
+        There are {{ counter }} images available for this product.
+      {% endblocktrans %}
+      {% for img in product.images.all %}
+        <div>
+          <img src="{{ img.image.url }}" alt="{{ img.image.name }}">
+          <div>{{ img.description }}</div>
+        </div>
+      {% empty %}
+        <div>{% trans "No images uploaded yet" %}</div>
+      {% endfor %}
+    </div>
+  </div>
+  <div>
+    <a href="{% url 'shopapp:product_update' pk=product.pk %}">{% trans "Update product" %}</a>
+  </div>
+  <div>
+    <a href="{% url 'shopapp:product_delete' pk=product.pk %}">{% trans "Archive product" %}</a>
+  </div>
+  <div>
+    <a href="{% url 'shopapp:products_list' %}">{% trans "Back to products list" %}</a>
+  </div>
+{% endblock %}
